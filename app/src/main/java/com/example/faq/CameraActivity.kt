@@ -112,10 +112,8 @@ fun CameraActivity(
 //            viewModel.addGalleryImages(galleryImages)
 //        }
 //    }
-
     LaunchedEffect(Unit) {
-
-
+        // Request camera permissions
         if (!hasCameraPermission(context)) {
             ActivityCompat.requestPermissions(
                 context as Activity,
@@ -124,7 +122,30 @@ fun CameraActivity(
             )
         }
 
+        // Request gallery permissions properly
+        val galleryPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
+        } else {
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+
+        val galleryPermission = galleryPermissions.first()
+
+        if (ContextCompat.checkSelfPermission(context, galleryPermission)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                context as Activity,
+                galleryPermissions,
+                101
+            )
+        } else {
+            // ✅ Only fetch gallery images after permission is granted
+            val galleryImages = GalleryUtils.getGalleryImages(context)
+            viewModel.addGalleryImages(galleryImages)
+        }
     }
+
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
@@ -155,7 +176,11 @@ fun CameraActivity(
             ) {
                 IconButton(
                     onClick = {
-                        scope.launch { scaffoldState.bottomSheetState.expand() }
+                        scope.launch {
+                            val galleryImages = GalleryUtils.getGalleryImages(context)
+                            viewModel.addGalleryImages(galleryImages)
+                            scaffoldState.bottomSheetState.expand()
+                        }
                     }
                 ) {
                     Icon(

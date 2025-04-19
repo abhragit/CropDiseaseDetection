@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.provider.MediaStore
+import android.util.Log
 
 object GalleryUtils {
     fun getGalleryImages(context: Context): List<Bitmap> {
@@ -21,6 +22,9 @@ object GalleryUtils {
             }
         }
 
+        Log.d("GalleryUtils", "Found ${imageList.size} images in gallery")
         return imageList
     }
-}
+
+    }
+

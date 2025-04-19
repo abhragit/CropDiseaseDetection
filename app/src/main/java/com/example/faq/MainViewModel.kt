@@ -18,7 +18,15 @@ class MainViewModel:ViewModel() {
     fun onTakePhoto(bitmap: Bitmap){
         _bitmaps.value += bitmap
     }
-    fun addGalleryImages(images: List<Bitmap>) {
-        _bitmaps.value += images
+    fun addGalleryImages(newImages: List<Bitmap>) {
+        val currentImages = _bitmaps.value.toMutableList()
+        // Avoid duplicates (can be improved with better comparison if needed)
+        newImages.forEach { newBitmap ->
+            if (currentImages.none { it.sameAs(newBitmap) }) {
+                currentImages.add(newBitmap)
+            }
+        }
+        _bitmaps.value = currentImages
     }
+
 }
