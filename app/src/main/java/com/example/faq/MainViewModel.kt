@@ -3,30 +3,39 @@ package com.example.faq
 import android.graphics.Bitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 
+class MainViewModel : ViewModel() {
+    private val _cameraBitmaps = MutableStateFlow<List<Bitmap>>(emptyList())
+    private val _galleryBitmaps = MutableStateFlow<List<Bitmap>>(emptyList())
+    private val _selectedImage = MutableStateFlow<Bitmap?>(null)
 
-class MainViewModel:ViewModel() {
+    val bitmaps = combine(_cameraBitmaps, _galleryBitmaps) { cam, gal -> cam + gal }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
+    val selectedImage: StateFlow<Bitmap?> = _selectedImage
 
-
-    private val _bitmaps = MutableStateFlow<List<Bitmap>>(emptyList())
-    val bitmaps = _bitmaps.asStateFlow()
-
-    fun onTakePhoto(bitmap: Bitmap){
-        _bitmaps.value += bitmap
-    }
-    fun addGalleryImages(newImages: List<Bitmap>) {
-        val currentImages = _bitmaps.value.toMutableList()
-        // Avoid duplicates (can be improved with better comparison if needed)
-        newImages.forEach { newBitmap ->
-            if (currentImages.none { it.sameAs(newBitmap) }) {
-                currentImages.add(newBitmap)
-            }
-        }
-        _bitmaps.value = currentImages
+    fun onTakePhoto(bitmap: Bitmap) {
+        _cameraBitmaps.value = _cameraBitmaps.value + bitmap
     }
 
+    fun addGalleryImages(galleryImages: List<Bitmap>) {
+        _galleryBitmaps.value = galleryImages
+    }
+
+    fun onImageSelected(bitmap: Bitmap) {
+        _selectedImage.value = bitmap
+    }
+
+    fun clearSelectedImage() {
+        _selectedImage.value = null
+    }
 }
+

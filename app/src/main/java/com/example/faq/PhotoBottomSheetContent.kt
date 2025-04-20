@@ -2,6 +2,7 @@ package com.example.faq
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,14 +23,13 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun PhotoBottomSheetContent(
-    bitmaps:List<Bitmap>,
-    modifier: Modifier = Modifier) {
+    bitmaps: List<Bitmap>,
+    modifier: Modifier = Modifier,
+    onImageClick: (Bitmap) -> Unit
+) {
     if (bitmaps.isEmpty()) {
-        Box(
-            modifier = modifier.padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("no photos")
+        Box(modifier = modifier.padding(16.dp), contentAlignment = Alignment.Center) {
+            Text("No photos")
         }
     } else {
         LazyVerticalStaggeredGrid(
@@ -45,8 +45,8 @@ fun PhotoBottomSheetContent(
                     contentDescription = null,
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
+                        .clickable { onImageClick(bitmap) }
                 )
-
             }
         }
     }

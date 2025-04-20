@@ -20,6 +20,7 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,9 +31,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,6 +51,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -61,6 +65,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 //import com.example.faq.MainActivity.Companion.CAMERA_PERMISSION
 import com.example.faq.ui.theme.FAQTheme
 import kotlinx.coroutines.launch
@@ -68,7 +73,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CameraActivity(
-    cropViewModel: CropViewModel = viewModel() // Inject if needed
+    cropViewModel: CropViewModel = viewModel(), // Inject if needed
+    navController: NavController
 ) {
    val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -86,32 +92,6 @@ fun CameraActivity(
     val viewModel: MainViewModel = viewModel()
     val bitmaps by viewModel.bitmaps.collectAsState()
 
-//    val galleryPermissionLauncher = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.RequestPermission()
-//    ) { isGranted ->
-//        if (isGranted) {
-//            val galleryImages = GalleryUtils.getGalleryImages(context)
-//            viewModel.addGalleryImages(galleryImages)
-//        } else {
-//            // Show an alert or prompt the user to enable permissions manually.
-//        }
-//    }
-
-// Ensure this block checks both granted and denied permissions dynamically.
-//    LaunchedEffect(Unit) {
-//        val permissionToRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//            Manifest.permission.READ_MEDIA_IMAGES
-//        } else {
-//            Manifest.permission.READ_EXTERNAL_STORAGE
-//        }
-//
-//        if (ContextCompat.checkSelfPermission(context, permissionToRequest) != PackageManager.PERMISSION_GRANTED) {
-//            galleryPermissionLauncher.launch(permissionToRequest)
-//        } else {
-//            val galleryImages = GalleryUtils.getGalleryImages(context)
-//            viewModel.addGalleryImages(galleryImages)
-//        }
-//    }
     LaunchedEffect(Unit) {
         // Request camera permissions
         if (!hasCameraPermission(context)) {
@@ -146,14 +126,15 @@ fun CameraActivity(
         }
     }
 
-
+    val selectedImage by viewModel.selectedImage.collectAsState()
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetPeekHeight = 0.dp,
         sheetContent = {
             PhotoBottomSheetContent(
                 bitmaps = bitmaps,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                onImageClick = {bitmaps->viewModel.onImageSelected(bitmaps)}
             )
         }
     ) { padding ->
@@ -162,57 +143,84 @@ fun CameraActivity(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            CameraPreview(
-                controller = controller,
-                modifier = Modifier.fillMaxSize()
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                IconButton(
-                    onClick = {
-                        scope.launch {
-                            val galleryImages = GalleryUtils.getGalleryImages(context)
-                            viewModel.addGalleryImages(galleryImages)
-                            scaffoldState.bottomSheetState.expand()
+            if (selectedImage != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Image(
+                            bitmap = selectedImage!!.asImageBitmap(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                        )
+                        Button(
+                            onClick = { navController.navigate("predict") },
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            Text("Predict")
                         }
                     }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Image,
-                        contentDescription = "Open Gallery"
-                    )
-                }
-                IconButton(
-                    onClick = {
-                        takePhoto(
-                            controller = controller,
-                            onPhotoTaken = viewModel::onTakePhoto,
-                            context = context
 
+                    IconButton(
+                        onClick = { viewModel.clearSelectedImage() },
+                        modifier = Modifier.align(Alignment.TopEnd).padding(16.dp)
+                    ) {
+                        Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
+                    }
+                }
+            }
+            else {
+                CameraPreview(
+                    controller = controller,
+                    modifier = Modifier.fillMaxSize()
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                val galleryImages = GalleryUtils.getGalleryImages(context)
+                                viewModel.addGalleryImages(galleryImages)
+                                scaffoldState.bottomSheetState.expand()
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Image,
+                            contentDescription = "Open Gallery",
+                            tint = Color.White
                         )
                     }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Camera,
-                        contentDescription = "Take Photo"
-                    )
+                    IconButton(
+                        onClick = {
+                            takePhoto(
+                                controller = controller,
+                                onPhotoTaken = viewModel::onTakePhoto,
+                                context = context
+
+                            )
+                        }
+                    ) {
+                        Icon(
+
+                            imageVector = Icons.Default.Camera,
+                            contentDescription = "Take Photo",
+                            tint = Color.White
+                        )
+                    }
+
                 }
-//                IconButton(
-//                    onClick = {
-//                        galleryPermissionLauncher
-//                    }
-//                ) {
-//                    Icon(
-//                        imageVector = Icons.Default.ImageSearch,
-//                        contentDescription = "Take Photo"
-//                    )
-//                }
             }
         }
     }
