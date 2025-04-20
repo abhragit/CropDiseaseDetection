@@ -74,7 +74,7 @@ class CropViewModel : ViewModel() {
     fun logout() {
         auth.signOut()
         _authState.value = AuthState.Unauthenticated
-        Log.d("LoginDebug", "User logged out")
+       // Log.d("LoginDebug", "User logged out")
     }
 
     // Other methods related to UI state...

@@ -61,6 +61,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 val cropViewModel :CropViewModel by viewModels()
+
         setContent {
             FAQTheme {   AppNavigator(cropViewModel=cropViewModel) }
 

@@ -25,74 +25,102 @@ enum class CropAppScreen(val title:String){
 @Composable
 fun AppNavigator(cropViewModel: CropViewModel) {
     val navController = rememberNavController()
-    var userEmail by remember { mutableStateOf("") }
 
     NavHost(navController = navController, startDestination = "login") {
         composable("login") {
             LoginScreen(
-                onLoginClick = { email, password ->
-                    userEmail = email
-                    // Navigate to the StartScreen of the crop app after login
-                    navController.navigate(CropAppScreen.Start.name) {
-                        // Optionally clear the backstack to prevent navigating back to login/signup
-                        popUpTo("Login") { inclusive = true }
-                    }
-                },
-                onNavigateToSignUp = {
-                    navController.navigate("signup") {
-                        popUpTo("login") { inclusive = true }
-                    }
-                },
-                navController = navController ,// pass navController explicitly
-cropViewModel = cropViewModel
-            )
-
-        }
-
-
-        composable("Signup") {
-            SignUpScreen(
-                onSignUpClick = { email, password ->
-                    userEmail = email
-                    // Navigate to the StartScreen of the crop app after sign up
-                    navController.navigate(CropAppScreen.Start.name) {
-                        // Optionally clear the backstack to prevent navigating back to login/signup
-                        popUpTo("signup") { inclusive = true }
-                    }
-                },
-                onNavigateToLogin = {
-                    navController.popBackStack()
-                }
-            , cropViewModel = cropViewModel)
-        }
-
-        // Crop App Navigator
-        composable(CropAppScreen.Start.name) {
-            CropApp()
-        }
-    }
-}
-
-@Composable
-fun CropApp(cropViewModel: CropViewModel = viewModel()) {
-    val navController = rememberNavController() // ✅ Use a new one for the nested NavHost
-
-    NavHost(navController = navController, startDestination = "start") {
-        composable("start") {
-            StartScreen(
+                navController = navController,
                 cropViewModel = cropViewModel,
-                onCameraClicked = {
-                    cropViewModel.updateSelectedCategory(it.toString())
-                    navController.navigate("camera")
-                }
             )
         }
-
+        composable("signup") {
+            SignUpScreen(
+                navController = navController,
+                cropViewModel = cropViewModel,
+            )
+        }
+        composable("start") {
+            StartScreen(cropViewModel = cropViewModel,
+               onCameraClicked = {
+                   cropViewModel.updateSelectedCategory(it.toString())
+                    navController.navigate("camera") },
+             navController = navController
+          )
+            //CropApp(navController = navController, cropViewModel = cropViewModel)
+        }
         composable("camera") {
             CameraScreen()
         }
     }
 }
+
+
+
+
+
+//            LoginScreen(
+//                onLoginClick = { email, password ->
+//                    userEmail = email
+//                    // Navigate to the StartScreen of the crop app after login
+//                    navController.navigate(CropAppScreen.Start.name) {
+//                        // Optionally clear the backstack to prevent navigating back to login/signup
+//                        popUpTo("Login") { inclusive = true }
+//                    }
+//                },
+//                onNavigateToSignUp = {
+//                    navController.navigate("signup") {
+//                        popUpTo("login") { inclusive = true }
+//                    }
+//                },
+//
+//            )
+//
+//        }
+//
+//
+//        composable("Signup") {
+//            SignUpScreen(
+//                onSignUpClick = { email, password ->
+//                    userEmail = email
+//                    // Navigate to the StartScreen of the crop app after sign up
+//                    navController.navigate(CropAppScreen.Start.name) {
+//                        // Optionally clear the backstack to prevent navigating back to login/signup
+//                        popUpTo("signup") { inclusive = true }
+//                    }
+//                },
+//                onNavigateToLogin = {
+//                    navController.popBackStack()
+//                }
+//          )
+//        }
+
+        // Crop App Navigator
+
+
+
+
+//@Composable
+//fun CropApp(
+//    navController: NavHostController,
+//    cropViewModel: CropViewModel
+//) {
+//    NavHost(navController = navController, startDestination = "start") {
+//        composable("start") {
+//            StartScreen(
+//                cropViewModel = cropViewModel,
+//                onCameraClicked = {
+//                    cropViewModel.updateSelectedCategory(it.toString())
+//                    navController.navigate("camera")
+//                },
+//                navController = navController
+//            )
+//        }
+//
+//        composable("camera") {
+//            CameraScreen()
+//        }
+//    }
+//}
 
 
 
