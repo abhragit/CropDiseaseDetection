@@ -20,7 +20,9 @@ enum class CropAppScreen(val title:String){
     Start(title = "Start"),
     Camera(title = "Scrap"),
     SignUp(title = "SignUp"),
-    Login(title = "Login")
+    Login(title = "Login"),
+    Support(title="Support"),
+    Summer(title="Summer")
 }
 @Composable
 fun AppNavigator(cropViewModel: CropViewModel) {
@@ -40,105 +42,46 @@ fun AppNavigator(cropViewModel: CropViewModel) {
             )
         }
         composable("start") {
-            StartScreen(cropViewModel = cropViewModel,
-               onCameraClicked = {
-                   cropViewModel.updateSelectedCategory(it.toString())
-                    navController.navigate("camera") },
-             navController = navController
-          )
+            StartScreen(
+                cropViewModel = cropViewModel,
+                onCameraClicked = {
+                    cropViewModel.updateSelectedCategory(it.toString())
+                    navController.navigate("camera")
+                },
+                onSupportClicked = {
+                    cropViewModel.updateSelectedCategory(it.toString())
+                    navController.navigate("support")
+                },
+                onSummerClicked = {
+                    cropViewModel.updateSelectedCategory(it.toString())
+                    navController.navigate("summer")
+                },
+                onWinterClicked = {
+                    cropViewModel.updateSelectedCategory(it.toString())
+                    navController.navigate("winter")
+                },
+                onSchemesClicked = {
+                    cropViewModel.updateSelectedCategory(it.toString())
+                    navController.navigate("schemes")
+                },
+                navController = navController
+            )
             //CropApp(navController = navController, cropViewModel = cropViewModel)
         }
         composable("camera") {
             CameraScreen()
         }
+        composable("support") {
+            SupportScreen(cropViewModel = cropViewModel)
+        }
+        composable("summer") {
+            SummerCropScreen(cropViewModel = cropViewModel)
+        }
+        composable("winter") {
+            WinterCropScreen(cropViewModel = cropViewModel)
+        }
+        composable("schemes") {
+            Schemes(cropViewModel = cropViewModel)
+        }
     }
 }
-
-
-
-
-
-//            LoginScreen(
-//                onLoginClick = { email, password ->
-//                    userEmail = email
-//                    // Navigate to the StartScreen of the crop app after login
-//                    navController.navigate(CropAppScreen.Start.name) {
-//                        // Optionally clear the backstack to prevent navigating back to login/signup
-//                        popUpTo("Login") { inclusive = true }
-//                    }
-//                },
-//                onNavigateToSignUp = {
-//                    navController.navigate("signup") {
-//                        popUpTo("login") { inclusive = true }
-//                    }
-//                },
-//
-//            )
-//
-//        }
-//
-//
-//        composable("Signup") {
-//            SignUpScreen(
-//                onSignUpClick = { email, password ->
-//                    userEmail = email
-//                    // Navigate to the StartScreen of the crop app after sign up
-//                    navController.navigate(CropAppScreen.Start.name) {
-//                        // Optionally clear the backstack to prevent navigating back to login/signup
-//                        popUpTo("signup") { inclusive = true }
-//                    }
-//                },
-//                onNavigateToLogin = {
-//                    navController.popBackStack()
-//                }
-//          )
-//        }
-
-        // Crop App Navigator
-
-
-
-
-//@Composable
-//fun CropApp(
-//    navController: NavHostController,
-//    cropViewModel: CropViewModel
-//) {
-//    NavHost(navController = navController, startDestination = "start") {
-//        composable("start") {
-//            StartScreen(
-//                cropViewModel = cropViewModel,
-//                onCameraClicked = {
-//                    cropViewModel.updateSelectedCategory(it.toString())
-//                    navController.navigate("camera")
-//                },
-//                navController = navController
-//            )
-//        }
-//
-//        composable("camera") {
-//            CameraScreen()
-//        }
-//    }
-//}
-
-
-
-
-//@Composable
-//fun CropApp(
-//cropViewModel: CropViewModel= viewModel(),
-// navController: NavHostController= rememberNavController()
-//){
-//NavHost( navController = navController, startDestination = CropAppScreen.Start.name){
-//composable(route = CropAppScreen.Start.name){
-//StartScreen(cropViewModel = cropViewModel, onCameraClicked = {
-//    cropViewModel.updateSelectedCategory(it.toString())
-//    navController.navigate(CropAppScreen.Camera.name)
-//})
-//}
-//    composable(route = CropAppScreen.Camera.name){
-//        CameraScreen()
-//    }
-//}
-//}
