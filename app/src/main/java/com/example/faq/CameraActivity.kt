@@ -127,6 +127,8 @@ fun CameraActivity(
     }
 
     val selectedImage by viewModel.selectedImage.collectAsState()
+    val  predictionViewModel: PredictionViewModel = viewModel()
+
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetPeekHeight = 0.dp,
@@ -159,7 +161,12 @@ fun CameraActivity(
                                 .padding(16.dp)
                         )
                         Button(
-                            onClick = { navController.navigate("predict") },
+                            onClick = {
+                                selectedImage?.let {
+                                    predictionViewModel.predictDiseaseFromImage(it)
+                                    navController.navigate("predict")
+                                }
+                            },
                             modifier = Modifier.padding(8.dp)
                         ) {
                             Text("Predict")

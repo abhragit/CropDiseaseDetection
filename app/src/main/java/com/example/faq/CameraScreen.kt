@@ -13,10 +13,11 @@ import androidx.navigation.compose.rememberNavController
 fun CameraScreen(){
 
         val navController = rememberNavController()
+        val predictionViewModel = PredictionViewModel()
 
         NavHost(navController = navController, startDestination = "camera") {
             composable("camera") { CameraActivity(navController = navController) }
-            composable("predict") { PredictionResultScreen() }
+            composable("predict") { PredictionResultScreen(predictionViewModel = predictionViewModel) }
         }
 
 

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -105,6 +106,7 @@ fun StartScreen(
                         .fillMaxWidth()
                         .height(200.dp) // Ensure height is set
                 ) {
+
                     items(items) { item ->
                         CardItem(item)
                     }
@@ -112,9 +114,9 @@ fun StartScreen(
 
                 // Spacer for some gap
                 Spacer(modifier = Modifier.height(15.dp))
-
                 CameraCard(cropViewModel = cropViewModel, onCameraClicked = onCameraClicked)
                 Spacer(modifier = Modifier.height(15.dp))
+                Row(modifier = Modifier.fillMaxWidth().height(30.dp)){Text(text="Other Access",fontWeight = FontWeight.Bold,fontStyle = FontStyle.Italic)}
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     contentPadding = PaddingValues(10.dp),
@@ -123,7 +125,7 @@ fun StartScreen(
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-
+                  //  item{Row(modifier = Modifier.fillMaxWidth()){Text(text="Other Access",fontWeight = FontWeight.Bold,fontStyle = FontStyle.Italic)} }
                     item{Summer(cropViewModel = cropViewModel, onSummerClicked = onSummerClicked)}
                     item { Winter(cropViewModel = cropViewModel, onWinterClicked = onWinterClicked) }
                     item {GovtSchemes(cropViewModel = cropViewModel, onSchemesClicked = onSchemesClicked)}
@@ -208,23 +210,36 @@ fun  Support(cropViewModel: CropViewModel,onSupportClicked: () -> Unit) {
             },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(6.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent) // Transparent to allow custom background
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(Color(0xFF00C853), Color(0xFF2962FF)) // Green to Blue
+                        colors = listOf(Color(0xFFF9E317), Color(0xFFFBFBFB))
                     ),
                     shape = RoundedCornerShape(12.dp)
                 )
                 .padding(12.dp)
         ) {
-            Text(
-                text = "Help and Support",
-                color = Color.White, fontWeight = FontWeight.Bold
-            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.chatgpt_image_apr_23__2025__02_13_52_am), // Make sure to add this image in res/drawable
+                    contentDescription = "Rice Crop Icon",
+                    modifier = Modifier.size(100.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Winter Crops",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 
@@ -241,30 +256,42 @@ fun  Summer(cropViewModel: CropViewModel,onSummerClicked: () -> Unit) {
             },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(6.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent) // Transparent to allow custom background
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(Color(0xFF00C853), Color(0xFF2962FF)) // Green to Blue
+                        colors = listOf(Color(0xFFE7103C), Color(0xFFFBFBFB))
                     ),
                     shape = RoundedCornerShape(12.dp)
                 )
                 .padding(12.dp)
         ) {
-            Text(
-                text = "Summer Crops",
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.chatgpt_image_apr_23__2025__02_20_35_am), // Make sure to add this image in res/drawable
+                    contentDescription = "Rice Crop Icon",
+                    modifier = Modifier.size(100.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Summer Crops",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 
 }
 @Composable
-fun  Winter(cropViewModel: CropViewModel,onWinterClicked: () -> Unit) {
+fun Winter(cropViewModel: CropViewModel, onWinterClicked: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -275,28 +302,40 @@ fun  Winter(cropViewModel: CropViewModel,onWinterClicked: () -> Unit) {
             },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(6.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent) // Transparent to allow custom background
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(Color(0xFF00C853), Color(0xFF2962FF)) // Green to Blue
+                        colors = listOf(Color(0xFF0FB1F5), Color(0xFFFBFBFB))
                     ),
                     shape = RoundedCornerShape(12.dp)
                 )
                 .padding(12.dp)
         ) {
-            Text(
-                text = "Winter Crops",
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.winter_crop), // Make sure to add this image in res/drawable
+                    contentDescription = "Rice Crop Icon",
+                    modifier = Modifier.size(100.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Winter Crops",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
-
 }
+
 @Composable
 fun  GovtSchemes(cropViewModel: CropViewModel,onSchemesClicked: () -> Unit) {
     Card(
@@ -309,24 +348,36 @@ fun  GovtSchemes(cropViewModel: CropViewModel,onSchemesClicked: () -> Unit) {
             },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(6.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent) // Transparent to allow custom background
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(Color(0xFF00C853), Color(0xFF2962FF)) // Green to Blue
+                        colors = listOf(Color(0xFFFF9610), Color(0xFFFBFBFB))
                     ),
                     shape = RoundedCornerShape(12.dp)
                 )
                 .padding(12.dp)
         ) {
-            Text(
-                text = "Schemes for Farmers",
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.chatgpt_image_apr_23__2025__02_04_40_am), // Make sure to add this image in res/drawable
+                    contentDescription = "Rice Crop Icon",
+                    modifier = Modifier.size(100.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Government Schemes",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 
