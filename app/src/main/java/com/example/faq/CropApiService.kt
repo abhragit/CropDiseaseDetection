@@ -17,6 +17,7 @@ interface PredictionApiService {
 
 data class PredictionResponse(
     val disease: String,
-    val confidence: Float
+    val confidence: Float,
+   // val message: String
 )
 

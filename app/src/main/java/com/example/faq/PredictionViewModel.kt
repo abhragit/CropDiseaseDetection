@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
-    private const val BASE_URL = "http://10.0.2.2:5000/" // replace later
+    private const val BASE_URL = "https://agriguard-modelapi.onrender.com/v1" // replace later
 
     val retrofit: PredictionApiService by lazy {
         val logging = HttpLoggingInterceptor().apply {

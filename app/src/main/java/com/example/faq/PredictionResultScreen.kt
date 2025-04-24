@@ -31,6 +31,7 @@ fun PredictionResultScreen(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Disease: ${prediction!!.disease}", fontSize = 20.sp)
                     Text("Confidence: ${prediction!!.confidence}", fontSize = 16.sp)
+                   // Text("Message: ${prediction!!.message}", fontSize = 16.sp)
                 }
             }
             error != null -> {

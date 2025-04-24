@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -51,6 +52,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,7 +81,7 @@ fun StartScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Start Screen") },
+                title = { Text("AgriGuard") },
                 actions = {
                     IconButton(onClick = { cropViewModel.logout() }) {
                         Icon(Icons.Default.Logout, contentDescription = "Logout")
@@ -135,6 +137,16 @@ fun StartScreen(
             }
 
         }
+        LaunchedEffect(Unit) {
+            coroutineScope.launch {
+                while (true) {
+                    for (i in items.indices) {
+                        scrollState.animateScrollToItem(i)
+                        delay(2000)
+                    }
+                }
+            }
+        }
     }
 }
 @Composable
@@ -152,7 +164,7 @@ fun CameraCard(
             modifier = Modifier
                 .background(
                     Brush.linearGradient(
-                        colors = listOf(Color.Green, Color.Blue),
+                        colors = listOf(Color(0xFFFF9800), Color(0xFFFFEB3B)), // orange to yellow
                         start = Offset(0f, 0f),
                         end = Offset(1000f, 0f)
                     )
@@ -169,34 +181,51 @@ fun CameraCard(
                 }
                 .padding(horizontal = 16.dp, vertical = 20.dp)
         ) {
-            Text(
-                text = "Click Your Crop Image",
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.align(Alignment.Center)
-            )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.camera_iconn), // adjust name to match your image
+                    contentDescription = "Camera Icon",
+                    modifier = Modifier
+                        .size(40.dp)
+                        .padding(end = 8.dp)
+                )
+                Text(
+                    text = "Click Your Crop Image",
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
         }
     }
 }
 
 
+
 @Composable
 fun CardItem(item: Items) {
-    Card (modifier = Modifier
-        .fillMaxSize()
-        .fillMaxWidth()
-        .padding(10.dp)) {
-
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+    ) {
         Image(
-            painterResource(id = item.imageResourceId), contentDescription = "", modifier = Modifier
-                .width(350.dp)
-                .height(200.dp)
-                .border(5.dp, color = androidx.compose.ui.graphics.Color.Black)
-
-
+            painter = painterResource(id = item.imageResourceId),
+            contentDescription = "",
+            contentScale = ContentScale.Crop, // Ensures image fills without blank space
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(16f / 9f) // Or you can use .height(200.dp) if you want fixed height
+                .border(5.dp, color = Color.Black)
         )
     }
 }
+
 
 @Composable
 fun  Support(cropViewModel: CropViewModel,onSupportClicked: () -> Unit) {
@@ -235,7 +264,7 @@ fun  Support(cropViewModel: CropViewModel,onSupportClicked: () -> Unit) {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Winter Crops",
+                    text = "Help and Support",
                     color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
@@ -275,13 +304,13 @@ fun  Summer(cropViewModel: CropViewModel,onSummerClicked: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.chatgpt_image_apr_23__2025__02_20_35_am), // Make sure to add this image in res/drawable
+                    painter = painterResource(id = R.drawable.winter_crop), // Make sure to add this image in res/drawable
                     contentDescription = "Rice Crop Icon",
                     modifier = Modifier.size(100.dp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Summer Crops",
+                    text = "Organic Farming",
                     color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
@@ -321,13 +350,13 @@ fun Winter(cropViewModel: CropViewModel, onWinterClicked: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.winter_crop), // Make sure to add this image in res/drawable
+                    painter = painterResource(id = R.drawable.weather_icon), // Make sure to add this image in res/drawable
                     contentDescription = "Rice Crop Icon",
                     modifier = Modifier.size(100.dp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Winter Crops",
+                    text = "Weather",
                     color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
